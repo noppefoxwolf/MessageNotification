@@ -73,7 +73,11 @@ extension NotificationCenter {
         subject: Message.Subject
     ) where Message.Subject: AnyObject {
         var notification = Message.makeNotification(message)
-        notification = Notification(name: notification.name, object: subject, userInfo: notification.userInfo)
+        notification = Notification(
+            name: notification.name,
+            object: subject,
+            userInfo: notification.userInfo
+        )
         post(notification)
     }
 
@@ -159,7 +163,11 @@ extension NotificationCenter {
         subject: Message.Subject
     ) where Message.Subject: AnyObject {
         var notification = Message.makeNotification(message)
-        notification = Notification(name: notification.name, object: subject, userInfo: notification.userInfo)
+        notification = Notification(
+            name: notification.name,
+            object: subject,
+            userInfo: notification.userInfo
+        )
         post(notification)
     }
 
@@ -259,26 +267,64 @@ extension NotificationCenter {
 
 public protocol _SendableMetatype: ~Copyable, ~Escapable {}
 
-
 extension NotificationCenter {
-    @available(iOS 18.0, *)
-    public func messages<Identifier : NotificationCenter._MessageIdentifier, Message : NotificationCenter._AsyncMessage>(of subject: Message.Subject, for identifier: Identifier, bufferSize limit: Int = 10) -> some AsyncSequence<Message, Never> where Message == Identifier.MessageType, Message.Subject : AnyObject {
-        // TODO:
-        AsyncStream(unfolding: {  0 as! Message })
+    @available(iOS 18.0, macOS 15.0, *)
+    public func messages<
+        Identifier: NotificationCenter._MessageIdentifier,
+        Message: NotificationCenter._AsyncMessage
+    >(of subject: Message.Subject, for identifier: Identifier, bufferSize limit: Int = 10)
+        -> some AsyncSequence<Message, Never>
+    where Message == Identifier.MessageType, Message.Subject: AnyObject {
+        AsyncStream { continuation in
+            let observer = addObserver(forName: Message.name, object: subject, queue: nil) {
+                notification in
+                guard let message = Message.makeMessage(notification) else { return }
+                continuation.yield(message)
+            }
+
+            continuation.onTermination = { _ in
+                self.removeObserver(observer)
+            }
+        }
     }
 
+    @available(iOS 18.0, macOS 15.0, *)
+    public func messages<
+        Identifier: NotificationCenter._MessageIdentifier,
+        Message: NotificationCenter._AsyncMessage
+    >(of subject: Message.Subject.Type, for identifier: Identifier, bufferSize limit: Int = 10)
+        -> some AsyncSequence<Message, Never> where Message == Identifier.MessageType
+    {
+        AsyncStream { continuation in
+            let observer = addObserver(forName: Message.name, object: nil, queue: nil) {
+                notification in
+                guard let message = Message.makeMessage(notification) else { return }
+                continuation.yield(message)
+            }
 
-    @available(iOS 18.0, *)
-    public func messages<Identifier : NotificationCenter._MessageIdentifier, Message : NotificationCenter._AsyncMessage>(of subject: Message.Subject.Type, for identifier: Identifier, bufferSize limit: Int = 10) -> some AsyncSequence<Message, Never> where Message == Identifier.MessageType {
-        // TODO:
-        AsyncStream(unfolding: {  0 as! Message })
+            continuation.onTermination = { _ in
+                self.removeObserver(observer)
+            }
+        }
     }
 
+    @available(iOS 18.0, macOS 15.0, *)
+    public func messages<Message: NotificationCenter._AsyncMessage>(
+        of subject: Message.Subject? = nil,
+        for messageType: Message.Type,
+        bufferSize limit: Int = 10
+    ) -> some AsyncSequence<Message, Never> where Message.Subject: AnyObject {
+        AsyncStream { continuation in
+            let observer = addObserver(forName: Message.name, object: subject, queue: nil) {
+                notification in
+                guard let message = Message.makeMessage(notification) else { return }
+                continuation.yield(message)
+            }
 
-    @available(iOS 18.0, *)
-    public func messages<Message : NotificationCenter._AsyncMessage>(of subject: Message.Subject? = nil, for messageType: Message.Type, bufferSize limit: Int = 10) -> some AsyncSequence<Message, Never> where Message.Subject : AnyObject {
-        // TODO:
-        AsyncStream(unfolding: {  0 as! Message })
+            continuation.onTermination = { _ in
+                self.removeObserver(observer)
+            }
+        }
     }
 
 }
