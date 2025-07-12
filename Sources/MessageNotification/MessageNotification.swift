@@ -16,6 +16,9 @@ extension NotificationCenter {
 
 extension NotificationCenter {
 
+    @_disfavoredOverload
+    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
+    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
     public func addObserver<
         Identifier: NotificationCenter._MessageIdentifier,
         Message: NotificationCenter._AsyncMessage
@@ -35,6 +38,9 @@ extension NotificationCenter {
         return _ObservationToken(observer: nsObserver, notificationCenter: self)
     }
 
+    @_disfavoredOverload
+    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
+    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
     public func addObserver<
         Identifier: NotificationCenter._MessageIdentifier,
         Message: NotificationCenter._AsyncMessage
@@ -53,6 +59,9 @@ extension NotificationCenter {
         return _ObservationToken(observer: nsObserver, notificationCenter: self)
     }
 
+    @_disfavoredOverload
+    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
+    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
     public func addObserver<Message: NotificationCenter._AsyncMessage>(
         of subject: Message.Subject? = nil,
         for messageType: Message.Type,
@@ -68,6 +77,9 @@ extension NotificationCenter {
         return _ObservationToken(observer: nsObserver, notificationCenter: self)
     }
 
+    @_disfavoredOverload
+    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
+    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
     public func post<Message: NotificationCenter._AsyncMessage>(
         _ message: Message,
         subject: Message.Subject
@@ -81,6 +93,9 @@ extension NotificationCenter {
         post(notification)
     }
 
+    @_disfavoredOverload
+    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
+    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
     public func post<Message: NotificationCenter._AsyncMessage>(
         _ message: Message,
         subject: Message.Subject.Type = Message.Subject.self
@@ -106,6 +121,9 @@ extension NotificationCenter {
 
 extension NotificationCenter {
 
+    @_disfavoredOverload
+    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
+    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
     public func addObserver<
         Identifier: NotificationCenter._MessageIdentifier,
         Message: NotificationCenter._MainActorMessage
@@ -125,6 +143,9 @@ extension NotificationCenter {
         return _ObservationToken(observer: nsObserver, notificationCenter: self)
     }
 
+    @_disfavoredOverload
+    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
+    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
     public func addObserver<
         Identifier: NotificationCenter._MessageIdentifier,
         Message: NotificationCenter._MainActorMessage
@@ -143,6 +164,9 @@ extension NotificationCenter {
         return _ObservationToken(observer: nsObserver, notificationCenter: self)
     }
 
+    @_disfavoredOverload
+    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
+    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
     public func addObserver<Message: NotificationCenter._MainActorMessage>(
         of subject: Message.Subject? = nil,
         for messageType: Message.Type,
@@ -158,6 +182,9 @@ extension NotificationCenter {
         return _ObservationToken(observer: nsObserver, notificationCenter: self)
     }
 
+    @_disfavoredOverload
+    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
+    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
     @MainActor public func post<Message: NotificationCenter._MainActorMessage>(
         _ message: Message,
         subject: Message.Subject
@@ -171,6 +198,9 @@ extension NotificationCenter {
         post(notification)
     }
 
+    @_disfavoredOverload
+    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
+    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter API instead")
     @MainActor public func post<Message: NotificationCenter._MainActorMessage>(
         _ message: Message,
         subject: Message.Subject.Type = Message.Subject.self
@@ -268,6 +298,9 @@ extension NotificationCenter {
 public protocol _SendableMetatype: ~Copyable, ~Escapable {}
 
 extension NotificationCenter {
+    @_disfavoredOverload
+    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter.notifications API instead")
+    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter.notifications API instead")
     public func messages<
         Identifier: NotificationCenter._MessageIdentifier,
         Message: NotificationCenter._AsyncMessage
@@ -287,6 +320,9 @@ extension NotificationCenter {
         }
     }
 
+    @_disfavoredOverload
+    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter.notifications API instead")
+    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter.notifications API instead")
     public func messages<
         Identifier: NotificationCenter._MessageIdentifier,
         Message: NotificationCenter._AsyncMessage
@@ -306,6 +342,9 @@ extension NotificationCenter {
         }
     }
 
+    @_disfavoredOverload
+    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter.notifications API instead")
+    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter.notifications API instead")
     public func messages<Message: NotificationCenter._AsyncMessage>(
         of subject: Message.Subject? = nil,
         for messageType: Message.Type,
