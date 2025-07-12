@@ -42,7 +42,7 @@ extension NotificationCenter {
 
 extension NotificationCenter {
 
-    public protocol _MainActorMessage : SendableMetatype {
+    public protocol _MainActorMessage : _SendableMetatype {
 
         associatedtype Subject
 
@@ -153,3 +153,5 @@ extension NotificationCenter {
         // TODO:
     }
 }
+
+public protocol _SendableMetatype: ~Copyable, ~Escapable {}
