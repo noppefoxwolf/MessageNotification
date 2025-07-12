@@ -386,7 +386,6 @@ actor TestState {
 
 // MARK: - AsyncSequence Tests
 
-@available(iOS 18.0, macOS 15.0, *)
 @Test func testAsyncSequenceWithSpecificSubject() async throws {
     let notificationCenter = NotificationCenter()
     let subject = TestSubject(id: "async_sequence_test")
@@ -420,7 +419,6 @@ actor TestState {
     #expect(receivedMessage?.content == "Second Stream Message")
 }
 
-@available(iOS 18.0, macOS 15.0, *)
 @Test func testAsyncSequenceWithSubjectType() async throws {
     let notificationCenter = NotificationCenter()
     let identifier = AsyncMessageIdentifier()
@@ -446,7 +444,6 @@ actor TestState {
     #expect(receivedMessage?.content == "Type Stream Message")
 }
 
-@available(iOS 18.0, macOS 15.0, *)
 @Test func testAsyncSequenceWithOptionalSubject() async throws {
     let notificationCenter = NotificationCenter()
     let subject = TestSubject(id: "optional_stream")
@@ -472,7 +469,6 @@ actor TestState {
     #expect(receivedMessage?.content == "Optional Stream Message")
 }
 
-@available(iOS 18.0, macOS 15.0, *)
 @Test func testAsyncSequenceWithNilSubject() async throws {
     let notificationCenter = NotificationCenter()
     let state = TestState()
@@ -498,18 +494,16 @@ actor TestState {
     #expect(receivedMessage?.content == "Nil Stream Message")
 }
 
-@available(iOS 18.0, macOS 15.0, *)
 @Test func testAsyncSequenceBufferSize() async throws {
     let notificationCenter = NotificationCenter()
     let subject = TestSubject(id: "buffer_test")
     let identifier = AsyncMessageIdentifier()
-    
+
     // Use a buffer size of 2
     let messagesStream = notificationCenter.messages(of: subject, for: identifier, bufferSize: 2)
-    
-    var receivedMessages: [TestAsyncMessage] = []
-    
+
     let streamTask = Task {
+        var receivedMessages: [TestAsyncMessage] = []
         for await message in messagesStream {
             receivedMessages.append(message)
             // Add delay to allow buffer to fill up
@@ -518,21 +512,22 @@ actor TestState {
                 break
             }
         }
+        return receivedMessages
     }
-    
+
     // Post multiple messages quickly to test buffering
     let message1 = TestAsyncMessage(content: "Buffer Message 1")
     let message2 = TestAsyncMessage(content: "Buffer Message 2")
     let message3 = TestAsyncMessage(content: "Buffer Message 3")
     let message4 = TestAsyncMessage(content: "Buffer Message 4")
-    
+
     notificationCenter.post(message1, subject: subject)
     notificationCenter.post(message2, subject: subject)
     notificationCenter.post(message3, subject: subject)
     notificationCenter.post(message4, subject: subject)
-    
-    await streamTask.value
-    
+
+    let receivedMessages = try await streamTask.value
+
     // With bufferingNewest(2), we should get the newest 2 messages
     #expect(receivedMessages.count == 2)
     // The exact messages received may vary depending on timing, but we should get some messages
