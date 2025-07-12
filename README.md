@@ -1,5 +1,7 @@
 # MessageNotification
 
+[![Tests](https://github.com/noppefoxwolf/MessageNotification/actions/workflows/test.yml/badge.svg)](https://github.com/noppefoxwolf/MessageNotification/actions/workflows/test.yml)
+
 A Swift package that provides type-safe message passing extensions for NotificationCenter with async/await support.
 
 ## Features
