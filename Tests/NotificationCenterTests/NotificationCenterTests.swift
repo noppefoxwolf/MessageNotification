@@ -1,6 +1,8 @@
+#if swift(>=6.2)
 import Foundation
 import Testing
 
+@available(iOS 26.0, macOS 26.0, *)
 struct TestAsyncMessage: NotificationCenter.AsyncMessage, Sendable {
     typealias Subject = TestSubject
     
@@ -18,6 +20,7 @@ struct TestAsyncMessage: NotificationCenter.AsyncMessage, Sendable {
     }
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 struct TestMainActorMessage: NotificationCenter.MainActorMessage {
     typealias Subject = TestSubject
     
@@ -203,6 +206,7 @@ struct MessageNotificationTests {
     }
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 actor AsyncMessageExpectation {
     private var continuation: CheckedContinuation<TestAsyncMessage, Never>?
     
@@ -220,6 +224,7 @@ actor AsyncMessageExpectation {
     }
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 @MainActor
 class MainActorMessageExpectation {
     private var continuation: CheckedContinuation<TestMainActorMessage, Never>?
@@ -245,3 +250,4 @@ class MainActorMessageExpectation {
         continuation = nil
     }
 }
+#endif
