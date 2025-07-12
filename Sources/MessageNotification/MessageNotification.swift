@@ -258,3 +258,27 @@ extension NotificationCenter {
 }
 
 public protocol _SendableMetatype: ~Copyable, ~Escapable {}
+
+
+extension NotificationCenter {
+    @available(iOS 18.0, *)
+    public func messages<Identifier : NotificationCenter._MessageIdentifier, Message : NotificationCenter._AsyncMessage>(of subject: Message.Subject, for identifier: Identifier, bufferSize limit: Int = 10) -> some AsyncSequence<Message, Never> where Message == Identifier.MessageType, Message.Subject : AnyObject {
+        // TODO:
+        AsyncStream(unfolding: {  0 as! Message })
+    }
+
+
+    @available(iOS 18.0, *)
+    public func messages<Identifier : NotificationCenter._MessageIdentifier, Message : NotificationCenter._AsyncMessage>(of subject: Message.Subject.Type, for identifier: Identifier, bufferSize limit: Int = 10) -> some AsyncSequence<Message, Never> where Message == Identifier.MessageType {
+        // TODO:
+        AsyncStream(unfolding: {  0 as! Message })
+    }
+
+
+    @available(iOS 18.0, *)
+    public func messages<Message : NotificationCenter._AsyncMessage>(of subject: Message.Subject? = nil, for messageType: Message.Type, bufferSize limit: Int = 10) -> some AsyncSequence<Message, Never> where Message.Subject : AnyObject {
+        // TODO:
+        AsyncStream(unfolding: {  0 as! Message })
+    }
+
+}
