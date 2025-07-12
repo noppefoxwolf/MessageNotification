@@ -275,7 +275,7 @@ extension NotificationCenter {
     >(of subject: Message.Subject, for identifier: Identifier, bufferSize limit: Int = 10)
         -> some AsyncSequence<Message, Never>
     where Message == Identifier.MessageType, Message.Subject: AnyObject {
-        AsyncStream { continuation in
+        AsyncStream(Message.self, bufferingPolicy: .bufferingNewest(limit)) { continuation in
             let observer = addObserver(forName: Message.name, object: subject, queue: nil) {
                 notification in
                 guard let message = Message.makeMessage(notification) else { return }
@@ -295,7 +295,7 @@ extension NotificationCenter {
     >(of subject: Message.Subject.Type, for identifier: Identifier, bufferSize limit: Int = 10)
         -> some AsyncSequence<Message, Never> where Message == Identifier.MessageType
     {
-        AsyncStream { continuation in
+        AsyncStream(Message.self, bufferingPolicy: .bufferingNewest(limit)) { continuation in
             let observer = addObserver(forName: Message.name, object: nil, queue: nil) {
                 notification in
                 guard let message = Message.makeMessage(notification) else { return }
@@ -314,7 +314,7 @@ extension NotificationCenter {
         for messageType: Message.Type,
         bufferSize limit: Int = 10
     ) -> some AsyncSequence<Message, Never> where Message.Subject: AnyObject {
-        AsyncStream { continuation in
+        AsyncStream(Message.self, bufferingPolicy: .bufferingNewest(limit)) { continuation in
             let observer = addObserver(forName: Message.name, object: subject, queue: nil) {
                 notification in
                 guard let message = Message.makeMessage(notification) else { return }
