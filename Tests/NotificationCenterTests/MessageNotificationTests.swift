@@ -1,8 +1,6 @@
 import Foundation
 import Testing
 
-@testable import MessageNotification
-
 // MARK: - Test Subjects
 
 class TestSubject: NSObject {
@@ -16,7 +14,7 @@ class TestSubject: NSObject {
 
 // MARK: - AsyncMessage Test Types
 
-struct TestAsyncMessage: NotificationCenter._AsyncMessage {
+struct TestAsyncMessage: NotificationCenter.AsyncMessage, Sendable {
     typealias Subject = TestSubject
 
     let content: String
@@ -40,7 +38,7 @@ struct TestAsyncMessage: NotificationCenter._AsyncMessage {
 
 // MARK: - MainActorMessage Test Types
 
-struct TestMainActorMessage: NotificationCenter._MainActorMessage {
+struct TestMainActorMessage: NotificationCenter.MainActorMessage {
     typealias Subject = TestSubject
 
     let content: String
@@ -66,8 +64,11 @@ struct TestMainActorMessage: NotificationCenter._MainActorMessage {
 
 // MARK: - Message Identifiers
 
-typealias AsyncMessageIdentifier = NotificationCenter._BaseMessageIdentifier<TestAsyncMessage>
-typealias MainActorMessageIdentifier = NotificationCenter._BaseMessageIdentifier<
+@available(iOS 26.0, macOS 26.0, *)
+typealias AsyncMessageIdentifier = NotificationCenter.BaseMessageIdentifier<TestAsyncMessage>
+
+@available(iOS 26.0, macOS 26.0, *)
+typealias MainActorMessageIdentifier = NotificationCenter.BaseMessageIdentifier<
     TestMainActorMessage
 >
 
@@ -122,7 +123,7 @@ actor TestState {
 }
 
 // MARK: - AsyncMessage Tests
-
+@available(iOS 26.0, macOS 26.0, *)
 @Test func testAsyncMessageWithSpecificSubject() async throws {
     let notificationCenter = NotificationCenter()
     let subject = TestSubject(id: "test1")
@@ -144,6 +145,7 @@ actor TestState {
     notificationCenter.removeObserver(token)
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 @Test func testAsyncMessageWithSubjectType() async throws {
     let notificationCenter = NotificationCenter()
     let identifier = AsyncMessageIdentifier()
@@ -164,6 +166,7 @@ actor TestState {
     notificationCenter.removeObserver(token)
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 @Test func testAsyncMessageWithOptionalSubject() async throws {
     let notificationCenter = NotificationCenter()
     let subject = TestSubject(id: "optional")
@@ -184,6 +187,7 @@ actor TestState {
     notificationCenter.removeObserver(token)
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 @Test func testAsyncMessageWithNilSubject() async throws {
     let notificationCenter = NotificationCenter()
     let state = TestState()
@@ -206,6 +210,7 @@ actor TestState {
 
 // MARK: - MainActorMessage Tests
 
+@available(iOS 26.0, macOS 26.0, *)
 @MainActor
 @Test func testMainActorMessageWithSpecificSubject() async throws {
     let notificationCenter = NotificationCenter()
@@ -228,6 +233,7 @@ actor TestState {
     notificationCenter.removeObserver(token)
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 @MainActor
 @Test func testMainActorMessageWithSubjectType() async throws {
     let notificationCenter = NotificationCenter()
@@ -249,6 +255,7 @@ actor TestState {
     notificationCenter.removeObserver(token)
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 @MainActor
 @Test func testMainActorMessageWithOptionalSubject() async throws {
     let notificationCenter = NotificationCenter()
@@ -273,6 +280,7 @@ actor TestState {
 
 // MARK: - ObservationToken Tests
 
+@available(iOS 26.0, macOS 26.0, *)
 @Test func testObservationTokenEquality() async throws {
     let notificationCenter = NotificationCenter()
     let subject = TestSubject(id: "token_test")
@@ -289,6 +297,7 @@ actor TestState {
     notificationCenter.removeObserver(token2)
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 @Test func testObservationTokenHashing() async throws {
     let notificationCenter = NotificationCenter()
     let subject = TestSubject(id: "hash_test")
@@ -306,6 +315,7 @@ actor TestState {
     notificationCenter.removeObserver(token2)
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 @Test func testRemoveObserver() async throws {
     let notificationCenter = NotificationCenter()
     let subject = TestSubject(id: "remove_test")
@@ -333,6 +343,7 @@ actor TestState {
     #expect(finalCount == 1)
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 @Test func testMultipleObservers() async throws {
     let notificationCenter = NotificationCenter()
     let subject = TestSubject(id: "multiple_test")
@@ -366,6 +377,7 @@ actor TestState {
 
 // MARK: - AsyncSequence Tests
 
+@available(iOS 26.0, macOS 26.0, *)
 @Test func testAsyncSequenceWithSpecificSubject() async throws {
     let notificationCenter = NotificationCenter()
     let subject = TestSubject(id: "async_sequence_test")
@@ -393,6 +405,7 @@ actor TestState {
     #expect(receivedMessage?.content == "Second Stream Message")
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 @Test func testAsyncSequenceWithSubjectType() async throws {
     let notificationCenter = NotificationCenter()
     let identifier = AsyncMessageIdentifier()
@@ -400,18 +413,23 @@ actor TestState {
 
     let messagesStream = notificationCenter.messages(of: TestSubject.self, for: identifier)
 
-    for await message in messagesStream {
-        await state.setReceivedMessage(message)
-        break
+    let streamTask = Task {
+        for await message in messagesStream {
+            await state.setReceivedMessage(message)
+            break
+        }
     }
 
     let message = TestAsyncMessage(content: "Type Stream Message")
     notificationCenter.post(message, subject: TestSubject.self)
 
+    await streamTask.value
+
     let receivedMessage = await state.getReceivedMessage()
     #expect(receivedMessage?.content == "Type Stream Message")
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 @Test func testAsyncSequenceWithOptionalSubject() async throws {
     let notificationCenter = NotificationCenter()
     let subject = TestSubject(id: "optional_stream")
@@ -431,25 +449,31 @@ actor TestState {
     #expect(receivedMessage?.content == "Optional Stream Message")
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 @Test func testAsyncSequenceWithNilSubject() async throws {
     let notificationCenter = NotificationCenter()
     let state = TestState()
 
     let messagesStream = notificationCenter.messages(of: nil, for: TestAsyncMessage.self)
-    
-    for await message in messagesStream {
-        await state.setReceivedMessage(message)
-        break
+
+    let streamTask = Task {
+        for await message in messagesStream {
+            await state.setReceivedMessage(message)
+            break
+        }
     }
 
     let message = TestAsyncMessage(content: "Nil Stream Message")
     let subject = TestSubject(id: "any_subject")
     notificationCenter.post(message, subject: subject)
 
+    await streamTask.value
+
     let receivedMessage = await state.getReceivedMessage()
     #expect(receivedMessage?.content == "Nil Stream Message")
 }
 
+@available(iOS 26.0, macOS 26.0, *)
 @Test func testAsyncSequenceBufferSize() async throws {
     let notificationCenter = NotificationCenter()
     let subject = TestSubject(id: "buffer_test")
@@ -461,8 +485,6 @@ actor TestState {
     var receivedMessages: [TestAsyncMessage] = []
     for await message in messagesStream {
         receivedMessages.append(message)
-        // Add delay to allow buffer to fill up
-
         if receivedMessages.count >= 2 {
             break
         }

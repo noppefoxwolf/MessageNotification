@@ -2,8 +2,16 @@
 
 extension NotificationCenter {
     @_disfavoredOverload
-    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter.notifications API instead")
-    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter.notifications API instead")
+    @available(
+        iOS,
+        deprecated: 26.0,
+        message: "Use the standard NotificationCenter.notifications API instead"
+    )
+    @available(
+        macOS,
+        deprecated: 26.0,
+        message: "Use the standard NotificationCenter.notifications API instead"
+    )
     public func messages<
         Identifier: NotificationCenter._MessageIdentifier,
         Message: NotificationCenter._AsyncMessage
@@ -24,8 +32,16 @@ extension NotificationCenter {
     }
 
     @_disfavoredOverload
-    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter.notifications API instead")
-    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter.notifications API instead")
+    @available(
+        iOS,
+        deprecated: 26.0,
+        message: "Use the standard NotificationCenter.notifications API instead"
+    )
+    @available(
+        macOS,
+        deprecated: 26.0,
+        message: "Use the standard NotificationCenter.notifications API instead"
+    )
     public func messages<
         Identifier: NotificationCenter._MessageIdentifier,
         Message: NotificationCenter._AsyncMessage
@@ -46,8 +62,16 @@ extension NotificationCenter {
     }
 
     @_disfavoredOverload
-    @available(iOS, deprecated: 26.0, message: "Use the standard NotificationCenter.notifications API instead")
-    @available(macOS, deprecated: 26.0, message: "Use the standard NotificationCenter.notifications API instead")
+    @available(
+        iOS,
+        deprecated: 26.0,
+        message: "Use the standard NotificationCenter.notifications API instead"
+    )
+    @available(
+        macOS,
+        deprecated: 26.0,
+        message: "Use the standard NotificationCenter.notifications API instead"
+    )
     public func messages<Message: NotificationCenter._AsyncMessage>(
         of subject: Message.Subject? = nil,
         for messageType: Message.Type,
