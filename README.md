@@ -4,6 +4,8 @@
 
 A Swift package that provides type-safe message passing extensions for NotificationCenter with async/await support.
 
+This is a backport of the iOS 26 NotificationCenter Message extensions for earlier versions.
+
 ## Features
 
 - Type-safe message protocol for NotificationCenter
