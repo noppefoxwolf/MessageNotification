@@ -92,7 +92,7 @@ extension NotificationCenter {
 
 extension NotificationCenter {
 
-    public protocol _MainActorMessage: _SendableMetatype {
+    public protocol _MainActorMessage: _SendableMetatype, Sendable {
 
         associatedtype Subject
 
