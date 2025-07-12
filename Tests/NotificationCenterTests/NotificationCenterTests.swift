@@ -1,3 +1,6 @@
+// This file is a test to check the behavior of NotificationCenter on iOS26 and macOS26.
+// Do not import MessageNotification
+
 import Foundation
 import Testing
 
