@@ -10,13 +10,15 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "MessageNotification",
-            targets: ["MessageNotification"]),
+            targets: ["MessageNotification"]
+        )
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "MessageNotification"),
+            name: "MessageNotification"
+        ),
         .testTarget(
             name: "MessageNotificationTests",
             dependencies: ["MessageNotification"]

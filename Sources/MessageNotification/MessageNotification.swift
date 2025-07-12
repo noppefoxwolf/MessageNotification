@@ -2,7 +2,7 @@
 
 extension NotificationCenter {
 
-    public protocol _AsyncMessage : Sendable {
+    public protocol _AsyncMessage: Sendable {
 
         associatedtype Subject
 
@@ -16,8 +16,17 @@ extension NotificationCenter {
 
 extension NotificationCenter {
 
-    public func addObserver<Identifier: NotificationCenter._MessageIdentifier, Message: NotificationCenter._AsyncMessage>(of subject: Message.Subject, for identifier: Identifier, using observer: @escaping @Sendable (Message) async -> Void) -> NotificationCenter._ObservationToken where Message == Identifier.MessageType, Message.Subject : AnyObject {
-        let nsObserver = addObserver(forName: Message.name, object: subject, queue: nil) { notification in
+    public func addObserver<
+        Identifier: NotificationCenter._MessageIdentifier,
+        Message: NotificationCenter._AsyncMessage
+    >(
+        of subject: Message.Subject,
+        for identifier: Identifier,
+        using observer: @escaping @Sendable (Message) async -> Void
+    ) -> NotificationCenter._ObservationToken
+    where Message == Identifier.MessageType, Message.Subject: AnyObject {
+        let nsObserver = addObserver(forName: Message.name, object: subject, queue: nil) {
+            notification in
             guard let message = Message.makeMessage(notification) else { return }
             Task {
                 await observer(message)
@@ -26,8 +35,16 @@ extension NotificationCenter {
         return _ObservationToken(observer: nsObserver, notificationCenter: self)
     }
 
-    public func addObserver<Identifier : NotificationCenter._MessageIdentifier, Message : NotificationCenter._AsyncMessage>(of subject: Message.Subject.Type, for identifier: Identifier, using observer: @escaping @Sendable (Message) async -> Void) -> NotificationCenter._ObservationToken where Message == Identifier.MessageType {
-        let nsObserver = addObserver(forName: Message.name, object: nil, queue: nil) { notification in
+    public func addObserver<
+        Identifier: NotificationCenter._MessageIdentifier,
+        Message: NotificationCenter._AsyncMessage
+    >(
+        of subject: Message.Subject.Type,
+        for identifier: Identifier,
+        using observer: @escaping @Sendable (Message) async -> Void
+    ) -> NotificationCenter._ObservationToken where Message == Identifier.MessageType {
+        let nsObserver = addObserver(forName: Message.name, object: nil, queue: nil) {
+            notification in
             guard let message = Message.makeMessage(notification) else { return }
             Task {
                 await observer(message)
@@ -36,8 +53,13 @@ extension NotificationCenter {
         return _ObservationToken(observer: nsObserver, notificationCenter: self)
     }
 
-    public func addObserver<Message : NotificationCenter._AsyncMessage>(of subject: Message.Subject? = nil, for messageType: Message.Type, using observer: @escaping @Sendable (Message) async -> Void) -> NotificationCenter._ObservationToken where Message.Subject : AnyObject {
-        let nsObserver = addObserver(forName: Message.name, object: subject, queue: nil) { notification in
+    public func addObserver<Message: NotificationCenter._AsyncMessage>(
+        of subject: Message.Subject? = nil,
+        for messageType: Message.Type,
+        using observer: @escaping @Sendable (Message) async -> Void
+    ) -> NotificationCenter._ObservationToken where Message.Subject: AnyObject {
+        let nsObserver = addObserver(forName: Message.name, object: subject, queue: nil) {
+            notification in
             guard let message = Message.makeMessage(notification) else { return }
             Task {
                 await observer(message)
@@ -46,12 +68,18 @@ extension NotificationCenter {
         return _ObservationToken(observer: nsObserver, notificationCenter: self)
     }
 
-    public func post<Message : NotificationCenter._AsyncMessage>(_ message: Message, subject: Message.Subject) where Message.Subject : AnyObject {
+    public func post<Message: NotificationCenter._AsyncMessage>(
+        _ message: Message,
+        subject: Message.Subject
+    ) where Message.Subject: AnyObject {
         let notification = Message.makeNotification(message)
         post(notification)
     }
 
-    public func post<Message : NotificationCenter._AsyncMessage>(_ message: Message, subject: Message.Subject.Type = Message.Subject.self) {
+    public func post<Message: NotificationCenter._AsyncMessage>(
+        _ message: Message,
+        subject: Message.Subject.Type = Message.Subject.self
+    ) {
         let notification = Message.makeNotification(message)
         post(notification)
     }
@@ -59,7 +87,7 @@ extension NotificationCenter {
 
 extension NotificationCenter {
 
-    public protocol _MainActorMessage : _SendableMetatype {
+    public protocol _MainActorMessage: _SendableMetatype {
 
         associatedtype Subject
 
@@ -72,19 +100,18 @@ extension NotificationCenter {
 }
 
 extension NotificationCenter {
-    
-    public func addObserver<Identifier : NotificationCenter._MessageIdentifier, Message : NotificationCenter._MainActorMessage>(of subject: Message.Subject, for identifier: Identifier, using observer: @escaping @MainActor (Message) -> Void) -> NotificationCenter._ObservationToken where Message == Identifier.MessageType, Message.Subject : AnyObject {
-        let nsObserver = addObserver(forName: Message.name, object: subject, queue: .main) { notification in
-            Task { @MainActor in
-                guard let message = Message.makeMessage(notification) else { return }
-                observer(message)
-            }
-        }
-        return _ObservationToken(observer: nsObserver, notificationCenter: self)
-    }
-    
-    public func addObserver<Identifier : NotificationCenter._MessageIdentifier, Message : NotificationCenter._MainActorMessage>(of subject: Message.Subject.Type, for identifier: Identifier, using observer: @escaping @MainActor (Message) -> Void) -> NotificationCenter._ObservationToken where Message == Identifier.MessageType {
-        let nsObserver = addObserver(forName: Message.name, object: nil, queue: .main) { notification in
+
+    public func addObserver<
+        Identifier: NotificationCenter._MessageIdentifier,
+        Message: NotificationCenter._MainActorMessage
+    >(
+        of subject: Message.Subject,
+        for identifier: Identifier,
+        using observer: @escaping @MainActor (Message) -> Void
+    ) -> NotificationCenter._ObservationToken
+    where Message == Identifier.MessageType, Message.Subject: AnyObject {
+        let nsObserver = addObserver(forName: Message.name, object: subject, queue: .main) {
+            notification in
             Task { @MainActor in
                 guard let message = Message.makeMessage(notification) else { return }
                 observer(message)
@@ -93,8 +120,16 @@ extension NotificationCenter {
         return _ObservationToken(observer: nsObserver, notificationCenter: self)
     }
 
-    public func addObserver<Message : NotificationCenter._MainActorMessage>(of subject: Message.Subject? = nil, for messageType: Message.Type, using observer: @escaping @MainActor (Message) -> Void) -> NotificationCenter._ObservationToken where Message.Subject : AnyObject {
-        let nsObserver = addObserver(forName: Message.name, object: subject, queue: .main) { notification in
+    public func addObserver<
+        Identifier: NotificationCenter._MessageIdentifier,
+        Message: NotificationCenter._MainActorMessage
+    >(
+        of subject: Message.Subject.Type,
+        for identifier: Identifier,
+        using observer: @escaping @MainActor (Message) -> Void
+    ) -> NotificationCenter._ObservationToken where Message == Identifier.MessageType {
+        let nsObserver = addObserver(forName: Message.name, object: nil, queue: .main) {
+            notification in
             Task { @MainActor in
                 guard let message = Message.makeMessage(notification) else { return }
                 observer(message)
@@ -103,12 +138,33 @@ extension NotificationCenter {
         return _ObservationToken(observer: nsObserver, notificationCenter: self)
     }
 
-    @MainActor public func post<Message : NotificationCenter._MainActorMessage>(_ message: Message, subject: Message.Subject) where Message.Subject : AnyObject {
+    public func addObserver<Message: NotificationCenter._MainActorMessage>(
+        of subject: Message.Subject? = nil,
+        for messageType: Message.Type,
+        using observer: @escaping @MainActor (Message) -> Void
+    ) -> NotificationCenter._ObservationToken where Message.Subject: AnyObject {
+        let nsObserver = addObserver(forName: Message.name, object: subject, queue: .main) {
+            notification in
+            Task { @MainActor in
+                guard let message = Message.makeMessage(notification) else { return }
+                observer(message)
+            }
+        }
+        return _ObservationToken(observer: nsObserver, notificationCenter: self)
+    }
+
+    @MainActor public func post<Message: NotificationCenter._MainActorMessage>(
+        _ message: Message,
+        subject: Message.Subject
+    ) where Message.Subject: AnyObject {
         let notification = Message.makeNotification(message)
         post(notification)
     }
 
-    @MainActor public func post<Message : NotificationCenter._MainActorMessage>(_ message: Message, subject: Message.Subject.Type = Message.Subject.self) {
+    @MainActor public func post<Message: NotificationCenter._MainActorMessage>(
+        _ message: Message,
+        subject: Message.Subject.Type = Message.Subject.self
+    ) {
         let notification = Message.makeNotification(message)
         post(notification)
     }
@@ -120,24 +176,26 @@ extension NotificationCenter {
 
         associatedtype MessageType
     }
-    
-    public struct _BaseMessageIdentifier<MessageType> : NotificationCenter._MessageIdentifier, Sendable {
 
-        public init() where MessageType : NotificationCenter._MainActorMessage {
+    public struct _BaseMessageIdentifier<MessageType>: NotificationCenter._MessageIdentifier,
+        Sendable
+    {
+
+        public init() where MessageType: NotificationCenter._MainActorMessage {
         }
 
-        public init() where MessageType : NotificationCenter._AsyncMessage {
+        public init() where MessageType: NotificationCenter._AsyncMessage {
         }
     }
 }
 
 extension NotificationCenter {
 
-    public struct _ObservationToken : Hashable, @unchecked Sendable {
-        
+    public struct _ObservationToken: Hashable, @unchecked Sendable {
+
         internal let observer: NSObjectProtocol
         internal let notificationCenter: NotificationCenter
-        
+
         internal init(observer: NSObjectProtocol, notificationCenter: NotificationCenter) {
             self.observer = observer
             self.notificationCenter = notificationCenter
@@ -151,7 +209,10 @@ extension NotificationCenter {
         /// - Parameters:
         ///   - lhs: A value to compare.
         ///   - rhs: Another value to compare.
-        public static func == (a: NotificationCenter._ObservationToken, b: NotificationCenter._ObservationToken) -> Bool {
+        public static func == (
+            a: NotificationCenter._ObservationToken,
+            b: NotificationCenter._ObservationToken
+        ) -> Bool {
             ObjectIdentifier(a.observer) == ObjectIdentifier(b.observer)
         }
 
