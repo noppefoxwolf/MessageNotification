@@ -72,7 +72,8 @@ extension NotificationCenter {
         _ message: Message,
         subject: Message.Subject
     ) where Message.Subject: AnyObject {
-        let notification = Message.makeNotification(message)
+        var notification = Message.makeNotification(message)
+        notification = Notification(name: notification.name, object: subject, userInfo: notification.userInfo)
         post(notification)
     }
 
@@ -157,7 +158,8 @@ extension NotificationCenter {
         _ message: Message,
         subject: Message.Subject
     ) where Message.Subject: AnyObject {
-        let notification = Message.makeNotification(message)
+        var notification = Message.makeNotification(message)
+        notification = Notification(name: notification.name, object: subject, userInfo: notification.userInfo)
         post(notification)
     }
 
